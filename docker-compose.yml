@@ -20,3 +20,11 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.1
+    volumes:
+      - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./output:/usr/share/logstash/output
+    environment:
+      - XPACK_MONITORING_ENABLED=false
