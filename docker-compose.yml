@@ -1,18 +1,18 @@
+version: "2"
+
 services:
   nfacctd:
     image: pmacct/nfacctd:v1.7.9
     restart: always
-    platform: linux/x86_64
     ports:
       - "9996:9996/udp"
     volumes:
-      - ./conf/nfacctd.conf:/etc/pmacct/nfacctd.conf
-      - ./conf/pretag.map:/etc/pmacct/pretag.map
-      - ./conf/kafka.csv:/etc/pmacct/kafka.csv
+      - ./nfacctd/nfacctd.conf:/etc/pmacct/nfacctd.conf
+      - ./nfacctd/pretag.map:/etc/pmacct/pretag.map
+      - ./nfacctd/kafka.csv:/etc/pmacct/kafka.csv
 
   kafka:
     image: 'bitnami/kafka:3.8.0'
-    platform: linux/x86_64
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
@@ -24,7 +24,6 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.2
     volumes:
-      - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-      - ./output:/usr/share/logstash/output
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     environment:
       - XPACK_MONITORING_ENABLED=false
