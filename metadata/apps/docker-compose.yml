@@ -1,0 +1,10 @@
+services:
+  metadata_apps:
+    image: metranova/metadata-apps:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../../nfacctd:/data/cache
+    entrypoint: python3 /app/metadata_apps.py
+
