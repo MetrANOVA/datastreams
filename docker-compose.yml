@@ -1,6 +1,6 @@
 services:
   nfacctd:
-    image: pmacct/nfacctd:latest
+    image: pmacct/nfacctd:v1.7.9
     restart: always
     platform: linux/x86_64
     ports:
@@ -11,7 +11,7 @@ services:
       - ./conf/kafka.csv:/etc/pmacct/kafka.csv
 
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: 'bitnami/kafka:3.8.0'
     platform: linux/x86_64
     environment:
       - KAFKA_CFG_NODE_ID=0
@@ -22,7 +22,7 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.8.1
+    image: docker.elastic.co/logstash/logstash:8.15.2
     volumes:
       - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
       - ./output:/usr/share/logstash/output
