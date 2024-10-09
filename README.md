@@ -10,5 +10,7 @@ We'll use docker compose's "profile" feature to separate components that we migh
 
 For instance, we may want to have a "collector" profile, as differentiated from a "storage" profile. These would then spin up separate stacks that can be deployed to different VMs.
 
+#Generating apps
 
+docker compose run --build metadata_apps
 

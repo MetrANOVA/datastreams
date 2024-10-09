@@ -1,1 +1,5 @@
-nfacctd/pretag.map.app_names
+.DS_Store
+.*.swn
+.*.swo
+.*.swp
+.vscode/

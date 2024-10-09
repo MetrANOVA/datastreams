@@ -1,0 +1,15 @@
+nuttcp,5000,tcp
+nuttcp,5000,udp
+iperf,5001,tcp
+iperf,5001,udp
+nuttcp,5101,tcp
+nuttcp,5101,udp
+iperf3,5201,tcp
+iperf3,5201,udp
+gridftp-ctrl,2811,tcp
+gridftp-data,50000-51000,tcp
+rootd,1095,tcp
+rootd,1095,udp
+zoom-video,8801-8802,tcp
+zoom-video,8801-8810,udp
+zoom-video,3478-3479,udp

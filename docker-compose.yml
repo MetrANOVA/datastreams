@@ -9,6 +9,7 @@ services:
     volumes:
       - ./nfacctd/nfacctd.conf:/etc/pmacct/nfacctd.conf
       - ./nfacctd/pretag.map:/etc/pmacct/pretag.map
+      - ./nfacctd/ports.lst:/etc/pmacct/ports.lst
       - ./nfacctd/kafka.csv:/etc/pmacct/kafka.csv
 
   kafka:
