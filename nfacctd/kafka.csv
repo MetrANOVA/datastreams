@@ -1,4 +1,3 @@
 global,metadata.broker.list,kafka:9092
 topic,partitioner,random
 global,sticky.partitioning.linger.ms,0
-global,queue.buffering.max.messages,1000000
