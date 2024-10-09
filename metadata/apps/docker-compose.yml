@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ../../nfacctd:/data/cache
+      - ../../nfacctd:/data/cache/nfacctd
+      - ../../logstash/data:/data/cache/logstash
     entrypoint: python3 /app/metadata_apps.py
 

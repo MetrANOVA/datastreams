@@ -25,6 +25,7 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.2
     volumes:
-      - ./logstash/:/usr/share/logstash/pipeline/:ro
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
+      - ./logstash/data/:/var/lib/metranova/:ro
     environment:
       - XPACK_MONITORING_ENABLED=false
