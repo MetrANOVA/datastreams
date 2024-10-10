@@ -29,3 +29,55 @@ services:
       - ./logstash/data/:/var/lib/metranova/:ro
     environment:
       - XPACK_MONITORING_ENABLED=false
+      - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
+      - LOGSTASH_OPENSEARCH_USER=metranova_writer
+      - OPENSEARCH_ADDRESS=opensearch:9200
+
+  opensearch: 
+    image: opensearchproject/opensearch:2.17.1
+    environment:
+      - cluster.name=opensearch-cluster # Name the cluster
+      - node.name=opensearch # Name the node that will run in this container
+      - discovery.seed_hosts=opensearch # Nodes to look for when discovering the cluster
+      - cluster.initial_cluster_manager_nodes=opensearch # Nodes eligible to serve as cluster manager
+      - bootstrap.memory_lock=true # Disable JVM heap memory swapping
+      - plugins.security.unsupported.restapi.allow_securityconfig_modification=true # allow us to enable anonymous access auth
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${MN_OPENSEARCH_ADMIN_PASSWORD} # Sets admin password. Must be a strong password or opensearch will reject.
+    ulimits:
+      memlock:
+        soft: -1 # Set memlock to unlimited (no soft or hard limit)
+        hard: -1
+      nofile:
+        soft: 65536 # Maximum number of open files for the opensearch user - set to at least 65536
+        hard: 65536
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.17.1
+    ports:
+      - 5601:5601 # Map host port 5601 to container port 5601
+    expose:
+      - "5601" # Expose port 5601 for web access to OpenSearch Dashboards
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+
+  opensearch-config:
+    image: metranova/opensearch-config:latest
+    build:
+      context: ./opensearch_config
+      dockerfile: Dockerfile
+    command: ["bash", "config.sh"]
+    depends_on:
+      - opensearch
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - OPENSEARCH_ADMIN_PASSWORD=${MN_OPENSEARCH_ADMIN_PASSWORD}
+      - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
+
+volumes:
+  opensearch-data:

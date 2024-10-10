@@ -1,0 +1,84 @@
+{
+    "index_patterns": [
+      "metranova_*"
+    ],
+    "template": {
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      },
+      "mappings": {
+        "_source": {},
+        "_meta": {},
+        "dynamic_templates": [
+          {
+            "ip_field": {
+              "mapping": {
+                "type": "ip"
+              },
+              "match": "ip"
+            }
+          },
+          {
+            "ipv4_field": {
+              "mapping": {
+                "type": "ip"
+              },
+              "match": "ipv4"
+            }
+          },
+          {
+            "ipv6_field": {
+              "mapping": {
+                "type": "ip"
+              },
+              "match": "ipv6"
+            }
+          },
+          {
+            "ip_suffix_field": {
+              "mapping": {
+                "type": "ip"
+              },
+              "match": "*_ip"
+            }
+          },
+          {
+            "location": {
+              "mapping": {
+                "type": "geo_point"
+              },
+              "match": "location"
+            }
+          },
+          {
+            "location_suffix_field": {
+              "mapping": {
+                "type": "geo_point"
+              },
+              "match": "*_location"
+            }
+          },
+          {
+            "json_unparsed": {
+              "mapping": {
+                "type": "object",
+                "enabled": false
+              },
+              "match": "json"
+            }
+          },
+          {
+            "default_string_to_keyword": {
+              "mapping": {
+                "type": "keyword"
+              },
+              "match_mapping_type": "string"
+            }
+          }
+        ],
+        "properties": {}
+      }
+    },
+    "data_stream": {}
+  }
