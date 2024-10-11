@@ -32,6 +32,8 @@ services:
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
       - LOGSTASH_OPENSEARCH_USER=metranova_writer
       - OPENSEARCH_URL=${MN_OPENSEARCH_URL}
+    #TODO: We need to install the opensearch output plugin before starting logstash. Should make this a custom image.
+    command: bash -c "logstash-plugin install logstash-output-opensearch && /usr/local/bin/docker-entrypoint"
 
   opensearch: 
     image: opensearchproject/opensearch:2.17.1
