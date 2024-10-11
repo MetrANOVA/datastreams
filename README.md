@@ -10,7 +10,7 @@ We intend to use this repo to set up a Docker Compose that should result in a se
 cp env.example .env
 # Edit .env with new passwords
 docker compose up -d
-#Go to http://localhost:5601 and login using admin and password you set
+#Go to https://localhost and login using admin and password you set
 ```
 
 # Docker Compose Profiles
