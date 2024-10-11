@@ -31,7 +31,7 @@ services:
       - XPACK_MONITORING_ENABLED=false
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
       - LOGSTASH_OPENSEARCH_USER=metranova_writer
-      - OPENSEARCH_ADDRESS=opensearch:9200
+      - OPENSEARCH_URL=${MN_OPENSEARCH_URL}
 
   opensearch: 
     image: opensearchproject/opensearch:2.17.1
