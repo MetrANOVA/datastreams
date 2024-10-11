@@ -14,6 +14,7 @@ services:
 
   kafka:
     image: 'bitnami/kafka:3.8.0'
+    restart: always
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
@@ -24,6 +25,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.2
+    restart: always
     volumes:
       - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
       - ./logstash/data/:/var/lib/metranova/:ro
@@ -37,6 +39,7 @@ services:
 
   opensearch: 
     image: opensearchproject/opensearch:2.17.1
+    restart: always
     environment:
       - cluster.name=opensearch-cluster # Name the cluster
       - node.name=opensearch # Name the node that will run in this container
@@ -60,6 +63,7 @@ services:
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.17.1
+    restart: always
     ports:
       - 5601:5601 # Map host port 5601 to container port 5601
     expose:
