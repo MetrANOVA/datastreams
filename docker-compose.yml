@@ -85,5 +85,52 @@ services:
       - OPENSEARCH_ADMIN_PASSWORD=${MN_OPENSEARCH_ADMIN_PASSWORD}
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
 
+  nginx-cert-init:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/selfsigned.sh:/usr/share/metranova/selfsigned.sh
+    environment:
+      - MN_HOSTNAME=${MN_HOSTNAME}
+    entrypoint: "/bin/sh /usr/share/metranova/selfsigned.sh"
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - nginx-cert-init
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/templates
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    environment:
+      - MN_HOSTNAME=${MN_HOSTNAME}
+
+####
+# The following is some patchwork Andy started to get a LetsEncrypt certbot container working. It's not finished yet.
+#
+# Th following goes under nginx and should reload the certs every 6 hours. 
+# There is a problem where overriding the command prevents templates from being run through envsubst. 
+# Probably just a matter of getting the right command.
+    #reloads certs periodically
+    #command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+# The following is the start of a certbot container. 
+  # certbot:
+  #   image: certbot/certbot
+  #   depends_on:
+  #     - nginx
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #     - ./certbot/entrypoint.sh:/usr/share/metranova/entrypoint.sh
+  #   environment:
+  #     - MN_HOSTNAME=${MN_HOSTNAME}
+  #     - MN_USE_LETSENCRYPT=${MN_USE_LETSENCRYPT}
+  #   entrypoint: "/bin/bash /usr/share/metranova/entrypoint.sh"
+
 volumes:
   opensearch-data:
