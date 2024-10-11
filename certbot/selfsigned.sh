@@ -10,6 +10,6 @@ if [ ! -f "$path/fullchain.pem" ]; then
     openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 3650\
         -keyout $path/privkey.pem \
         -out $path/fullchain.pem \
-        -subj '/CN=localhost'
+        -subj "/CN=${MN_HOSTNAME}"
     touch $path/SELF_SIGNED
 fi
