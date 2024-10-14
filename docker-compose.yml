@@ -85,6 +85,23 @@ services:
       - OPENSEARCH_ADMIN_PASSWORD=${MN_OPENSEARCH_ADMIN_PASSWORD}
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
 
+  grafana:
+    image: grafana/grafana:11.2.2-ubuntu
+    restart: always
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-opensearch-datasource,grafana-googlesheets-datasource,grafana-polystat-panel,marcusolsson-hourly-heatmap-panel,netsage-sankey-panel,netsage-slopegraph-panel,esnet-chord-panel,netsage-bumpchart-panel,esnet-matrix-panel,grafana-clickhouse-datasource,esnet-arcdiagram-panel,esnet-networkmap-panel
+      - GF_PANELS_DISABLE_SANITIZE_HTML=true
+      - GF_SECURITY_ADMIN_PASSWORD=${MN_GRAFANA_ADMIN_PASSWORD}
+      - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - OPENSEARCH_URL=${MN_OPENSEARCH_URL}
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/datasources/:/etc/grafana/provisioning/datasources/
+      - ./grafana/dashboards/:/etc/grafana/provisioning/dashboards/
+      - ./grafana/images/metranova_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg
+
   nginx-cert-init:
     image: certbot/certbot
     volumes:
