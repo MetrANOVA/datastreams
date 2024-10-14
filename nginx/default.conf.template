@@ -25,7 +25,7 @@ server {
     set $os_target https://opensearch:9200;
 
     location / {
-        proxy_pass $osd_target; #TODO: grafana
+        proxy_pass $gf_target;
     }
     
     location /opensearch {
