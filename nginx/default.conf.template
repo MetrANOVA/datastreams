@@ -25,6 +25,7 @@ server {
     set $os_target https://opensearch:9200;
 
     location / {
+        proxy_set_header Host $host;
         proxy_pass $gf_target;
     }
     
