@@ -112,6 +112,16 @@ services:
       - MN_HOSTNAME=${MN_HOSTNAME}
     entrypoint: "/bin/sh /usr/share/metranova/selfsigned.sh"
 
+  psregister:
+    image: metranova/psregister:latest
+    build:
+      context: ./psregister
+      dockerfile: Dockerfile
+    environment:
+      - LOOKUP_SERVICE_URL=${MN_LOOKUP_SERVICE_URL}
+      - HOSTNAME=${MN_HOSTNAME}
+      - ARCHIVE_URL=${MN_PUBLIC_OPENSEARCH_URL}
+
   nginx:
     image: nginx:1.27-alpine
     depends_on:
