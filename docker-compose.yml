@@ -73,6 +73,8 @@ services:
     expose:
       - "5601" # Expose port 5601 for web access to OpenSearch Dashboards
     environment:
+      SERVER_BASEPATH: ${MN_OPENSEARCHDASH_BASEPATH} # Set the base path for OpenSearch Dashboards
+      SERVER_REWRITEBASEPATH: true
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
 
   opensearch-config:
@@ -126,8 +128,25 @@ services:
       - HOSTNAME=${MN_HOSTNAME}
       - ARCHIVE_URL=${MN_PUBLIC_OPENSEARCH_URL}
 
+  grafana_agent:
+    image: metranova/grafana_agent:latest
+    restart: always
+    build:
+      context: ./grafana_agent
+      dockerfile: Dockerfile
+    environment:
+      - CHECK_INTERVAL=${MN_GRAFANA_AGENT_CHECK_INTERVAL}
+      - LOOKUP_SERVICE_ES_URL=${MN_LOOKUP_SERVICE_ES_URL}
+      - LOOKUP_SERVICE_ES_INDEX=${MN_LOOKUP_SERVICE_ES_INDEX}
+      - LOOKUP_SERVICE_ES_USER=${MN_LOOKUP_SERVICE_ES_USER}
+      - LOOKUP_SERVICE_ES_PASS=${MN_LOOKUP_SERVICE_ES_PASS}
+      - GRAFANA_URL=${MN_GRAFANA_URL}
+      - GRAFANA_USER=${MN_GRAFANA_USER}
+      - GRAFANA_PASSWORD=${MN_GRAFANA_PASSWORD}
+
   nginx:
     image: nginx:1.27-alpine
+    restart: always
     depends_on:
       - nginx-cert-init
     ports:

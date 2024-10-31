@@ -40,6 +40,9 @@ echo ""
 echo "[Create metranova_reader role]"
 curl -k -u admin:${OPENSEARCH_ADMIN_PASSWORD} -s -H 'Content-Type: application/json' -XPUT "https://${OPENSEARCH_HOST}:${OPENSEARCH_PORT}/_plugins/_security/api/roles/metranova_reader" -d '
 {
+  "cluster_permissions": [
+    "cluster_monitor"
+  ],
   "index_permissions": [{
     "index_patterns": [
       "metranova_*"
@@ -115,7 +118,7 @@ echo ""
 
 ##
 # Install metranova_writer role mapping
-echo "[Create role mapping for anonymous user]"
+echo "[Create role mapping for metranova_writer user]"
 curl -k -u admin:${OPENSEARCH_ADMIN_PASSWORD} -s -H 'Content-Type: application/json' -XPUT "https://${OPENSEARCH_HOST}:${OPENSEARCH_PORT}/_plugins/_security/api/rolesmapping/metranova_writer" -d'
 {
   "users" : [ "metranova_writer" ]
