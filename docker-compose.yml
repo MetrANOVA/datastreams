@@ -3,6 +3,8 @@ version: "2"
 services:
   nfacctd:
     image: pmacct/nfacctd:v1.7.9
+    profiles:
+      - collector
     restart: always
     network_mode: host
     ports:
@@ -15,6 +17,8 @@ services:
 
   kafka:
     image: 'bitnami/kafka:3.8.0'
+    profiles:
+      - collector
     restart: always
     ports:
       - "9094:9094"
@@ -30,6 +34,8 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.2
     restart: always
+    profiles:
+      - collector
     volumes:
       - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
       - ./logstash/data/:/var/lib/metranova/:ro
@@ -43,6 +49,8 @@ services:
 
   opensearch: 
     image: opensearchproject/opensearch:2.17.1
+    profiles:
+      - archive
     restart: always
     environment:
       - cluster.name=opensearch-cluster # Name the cluster
@@ -67,6 +75,8 @@ services:
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.17.1
+    profiles:
+      - archive
     restart: always
     ports:
       - 5601:5601 # Map host port 5601 to container port 5601
@@ -79,6 +89,8 @@ services:
 
   opensearch-config:
     image: metranova/opensearch-config:latest
+    profiles:
+      - archive
     build:
       context: ./opensearch_config
       dockerfile: Dockerfile
@@ -93,6 +105,8 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.2-ubuntu
+    profiles:
+      - frontend
     restart: always
     environment:
       - GF_INSTALL_PLUGINS=grafana-opensearch-datasource,grafana-googlesheets-datasource,grafana-polystat-panel,marcusolsson-hourly-heatmap-panel,netsage-sankey-panel,netsage-slopegraph-panel,esnet-chord-panel,netsage-bumpchart-panel,esnet-matrix-panel,grafana-clickhouse-datasource,esnet-arcdiagram-panel,esnet-networkmap-panel
@@ -110,6 +124,9 @@ services:
 
   nginx-cert-init:
     image: certbot/certbot
+    profiles:
+      - archive
+      - frontend
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
@@ -120,6 +137,8 @@ services:
 
   psregister:
     image: metranova/psregister:latest
+    profiles:
+      - archive
     build:
       context: ./psregister
       dockerfile: Dockerfile
@@ -130,6 +149,8 @@ services:
 
   grafana_agent:
     image: metranova/grafana_agent:latest
+    profiles:
+      - frontend
     restart: always
     build:
       context: ./grafana_agent
@@ -146,6 +167,9 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
+    profiles:
+      - archive
+      - frontend
     restart: always
     depends_on:
       - nginx-cert-init
