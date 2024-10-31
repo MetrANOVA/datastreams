@@ -30,6 +30,7 @@ server {
     }
     
     location /opensearch {
+        rewrite /opensearch/?(.*) /$1  break; #remove /opensearch from url before passing along
         proxy_pass $os_target; #opensearch
     }
 
