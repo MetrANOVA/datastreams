@@ -31,6 +31,19 @@ services:
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
+  kafka-config:
+    image: 'bitnami/kafka:3.8.0'
+    profiles:
+      - collector
+    depends_on:
+      - kafka
+    environment:
+      - MN_KAFKA_RENTENTION_MS=${MN_KAFKA_RENTENTION_MS}
+      - MN_KAFKA_RENTENTION_BYTES=${MN_KAFKA_RENTENTION_BYTES}
+    volumes:
+      - ./kafka_config:/app
+    command: ["bash", "/app/config.sh"]
+
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.2
     restart: always
