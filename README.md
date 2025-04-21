@@ -1,10 +1,10 @@
-# MetrANOVA TechEX Demo
+# MetrANOVA Datastreams
 
 This project provides a Docker Compose setup to run services that collect, process, store, and display aggregated flow data. It also includes tools to register the location of the archives and dynamically build dashboards with the results.
 
 ## Summary
 
-The MetrANOVA TechEX demo project is designed to facilitate the collection, processing, storage, and visualization of network flow data. It leverages Kafka and Logstash for data processing and includes tools to register archive locations and dynamically generate dashboards.
+The MetrANOVA Datastreams project is designed to facilitate the collection, processing, storage, and visualization of network flow data. It leverages Kafka and Logstash for data processing and includes tools to register archive locations and dynamically generate dashboards.
 
 ## Quickstart
 
