@@ -10,10 +10,10 @@ services:
     ports:
       - "9996:9996/udp"
     volumes:
-      - ./nfacctd/nfacctd.conf:/etc/pmacct/nfacctd.conf
-      - ./nfacctd/pretag.map:/etc/pmacct/pretag.map
-      - ./nfacctd/ports.lst:/etc/pmacct/ports.lst
-      - ./nfacctd/kafka.csv:/etc/pmacct/kafka.csv
+      - ./collector-flow-nfacctd/nfacctd.conf:/etc/pmacct/nfacctd.conf
+      - ./collector-flow-nfacctd/pretag.map:/etc/pmacct/pretag.map
+      - ./collector-flow-nfacctd/ports.lst:/etc/pmacct/ports.lst
+      - ./collector-flow-nfacctd/kafka.csv:/etc/pmacct/kafka.csv
 
   kafka:
     image: 'bitnami/kafka:3.8.0'
@@ -41,7 +41,7 @@ services:
       - MN_KAFKA_RENTENTION_MS=${MN_KAFKA_RENTENTION_MS}
       - MN_KAFKA_RENTENTION_BYTES=${MN_KAFKA_RENTENTION_BYTES}
     volumes:
-      - ./kafka_config:/app
+      - ./bus-flow-kafka:/app
     command: ["bash", "/app/config.sh"]
 
   logstash:
@@ -50,8 +50,8 @@ services:
     profiles:
       - collector
     volumes:
-      - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
-      - ./logstash/data/:/var/lib/metranova/:ro
+      - ./pipeline-flow-logstash/pipeline/:/usr/share/logstash/pipeline/:ro
+      - ./pipeline-flow-logstash/data/:/var/lib/metranova/:ro
     environment:
       - XPACK_MONITORING_ENABLED=false
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
@@ -105,7 +105,7 @@ services:
     profiles:
       - archive
     build:
-      context: ./opensearch_config
+      context: ./datastore-opensearch
       dockerfile: Dockerfile
     command: ["bash", "config.sh"]
     depends_on:
@@ -131,9 +131,9 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./grafana/datasources/:/etc/grafana/provisioning/datasources/
-      - ./grafana/dashboards/:/etc/grafana/provisioning/dashboards/
-      - ./grafana/images/metranova_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg
+      - ./ui-flow-grafana/datasources/:/etc/grafana/provisioning/datasources/
+      - ./ui-flow-grafana/dashboards/:/etc/grafana/provisioning/dashboards/
+      - ./ui-flow-grafana/images/metranova_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg
 
   nginx-cert-init:
     image: certbot/certbot
@@ -141,9 +141,9 @@ services:
       - archive
       - frontend
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/selfsigned.sh:/usr/share/metranova/selfsigned.sh
+      - ./config-certbot/conf:/etc/letsencrypt
+      - ./config-certbot/www:/var/www/certbot
+      - ./config-certbot/selfsigned.sh:/usr/share/metranova/selfsigned.sh
     environment:
       - MN_HOSTNAME=${MN_HOSTNAME}
     entrypoint: "/bin/sh /usr/share/metranova/selfsigned.sh"
@@ -153,7 +153,7 @@ services:
     profiles:
       - archive
     build:
-      context: ./psregister
+      context: ./discover-psregister
       dockerfile: Dockerfile
     environment:
       - LOOKUP_SERVICE_URL=${MN_LOOKUP_SERVICE_URL}
@@ -166,7 +166,7 @@ services:
       - frontend
     restart: always
     build:
-      context: ./grafana_agent
+      context: ./discover-grafana-agent
       dockerfile: Dockerfile
     environment:
       - CHECK_INTERVAL=${MN_GRAFANA_AGENT_CHECK_INTERVAL}
@@ -190,9 +190,9 @@ services:
       - "8080:80"
       - "443:443"
     volumes:
-      - ./nginx:/etc/nginx/templates
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - ./config-nginx:/etc/nginx/templates
+      - ./config-certbot/conf:/etc/letsencrypt
+      - ./config-certbot/www:/var/www/certbot
     environment:
       - MN_HOSTNAME=${MN_HOSTNAME}
 
