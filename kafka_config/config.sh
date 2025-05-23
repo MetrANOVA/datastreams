@@ -5,6 +5,9 @@ KAFKA_RENTENTION_MS=${MN_KAFKA_RENTENTION_MS:-86400000}
 # set KAFKA_RENTENTION_BYTES to value of MN_KAFKA_RENTENTION_BYTES or default to 5000000000
 KAFKA_RENTENTION_BYTES=${MN_KAFKA_RENTENTION_BYTES:-5000000000}
 
+# List of topic names
+KAFKA_TOPIC_NAMES=("metranova_flow_5m_asn_app" "metranova_flow_raw")
+
 # Waiting for kafka to start
 echo "Waiting for kafka to start..."
 i=0
@@ -20,9 +23,11 @@ do
 done
 echo "Kafka started!"
 
-# Create/alter topic
-echo "Creating/altering topic metranova_flow with retention.ms=${KAFKA_RENTENTION_MS} and retention.bytes=${KAFKA_RENTENTION_BYTES}"
-kafka-topics.sh --create --bootstrap-server kafka:9092 --if-not-exists --topic metranova_flow --config retention.ms=${KAFKA_RENTENTION_MS} --config retention.bytes=${KAFKA_RENTENTION_BYTES}
-kafka-configs.sh --alter --bootstrap-server kafka:9092 --entity-type topics --entity-name  metranova_flow --add-config retention.ms=${KAFKA_RENTENTION_MS} 
-kafka-configs.sh --alter --bootstrap-server kafka:9092 --entity-type topics --entity-name  metranova_flow --add-config retention.bytes=${KAFKA_RENTENTION_BYTES}
+# Create/alter topics
+for TOPIC in "${KAFKA_TOPIC_NAMES[@]}"; do
+    echo "Creating/altering topic $TOPIC with retention.ms=${KAFKA_RENTENTION_MS} and retention.bytes=${KAFKA_RENTENTION_BYTES}"
+    kafka-topics.sh --create --bootstrap-server kafka:9092 --if-not-exists --topic "$TOPIC" --config retention.ms=${KAFKA_RENTENTION_MS} --config retention.bytes=${KAFKA_RENTENTION_BYTES}
+    kafka-configs.sh --alter --bootstrap-server kafka:9092 --entity-type topics --entity-name "$TOPIC" --add-config retention.ms=${KAFKA_RENTENTION_MS}
+    kafka-configs.sh --alter --bootstrap-server kafka:9092 --entity-type topics --entity-name "$TOPIC" --add-config retention.bytes=${KAFKA_RENTENTION_BYTES}
+done
 echo "[DONE]"
