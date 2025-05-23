@@ -9,6 +9,7 @@ services:
       - "9996:9996/udp"
     volumes:
       - ./nfacctd/nfacctd.conf:/etc/pmacct/nfacctd.conf
+      - ./nfacctd/ipfix.primitives.lst:/etc/pmacct/ipfix.primitives.lst
       - ./nfacctd/pretag.map:/etc/pmacct/pretag.map
       - ./nfacctd/ports.lst:/etc/pmacct/ports.lst
       - ./nfacctd/kafka.csv:/etc/pmacct/kafka.csv

@@ -63,3 +63,11 @@ The frontend profile runs Grafana, Grafana Agent (a tool that queries the perfSO
 ```sh
 docker-compose --frontend archive up -d
 ```
+# Developers
+
+## Useful Kafka Commands
+
+Listen for events on a topic
+```
+docker compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic metranova_flow_5m_asn_app
+```
