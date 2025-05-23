@@ -43,14 +43,14 @@ services:
       - ./kafka_config:/app
     command: ["bash", "/app/config.sh"]
 
-  logstash:
+  pipeline_flow_5m_asn_app:
     image: docker.elastic.co/logstash/logstash:8.15.2
     restart: always
     profiles:
       - collector
     volumes:
-      - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
-      - ./logstash/data/:/var/lib/metranova/:ro
+      - ./pipeline-flow-5m-asn-app/pipeline/:/usr/share/logstash/pipeline/:ro
+      - ./pipeline-flow-5m-asn-app/data/:/var/lib/metranova/:ro
     environment:
       - XPACK_MONITORING_ENABLED=false
       - LOGSTASH_OPENSEARCH_PASSWORD=${MN_LOGSTASH_OPENSEARCH_PASSWORD}
